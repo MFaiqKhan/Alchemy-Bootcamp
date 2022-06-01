@@ -1,7 +1,7 @@
 // Contract deployed to 0x2c2F952140272bcE05e6c282Ed45b42b782D8D9a
 
 
-// SPDX-License-Identifier: MIT // code should be opensourced if not then it should be indicated
+// SPDX-License-Identifier: MIT // code should be opensource if not then it should be indicated
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts@4.5.0/token/ERC721/ERC721.sol";
