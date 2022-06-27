@@ -111,6 +111,39 @@ const Home = () => {
     }
   };
 
+  const buyBigCoffee = async () => {
+    try {
+      const {ethereum} = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum, "any");
+        const signer = provider.getSigner();
+        const buyMeACoffee = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+      
+      console.log("----Buying Coffee----Please Wait....");
+      const coffeeTxn = await buyMeACoffee.buyCoffee(
+        name ? name : "Anonymous",
+        message ? message : "No Message",
+        { value: ethers.utils.parseEther("0.03") }
+      );
+      console.log("----Transaction Started----Please Wait....");
+      await coffeeTxn.wait();
+      console.log("----Transaction Completed----, Mined", coffeeTxn.hash);
+      console.log("----Coffee Bought!!----");
+
+      // clear the form
+      setName("");
+      setMessage("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getMemos = async () => {
     try {
       const { ethereum } = window;
@@ -192,7 +225,7 @@ const Home = () => {
         {currentAccount ? (
           <div>
             <form>
-              <div class="formgroup">
+              <div className="formgroup">
                 <label>Name</label>
                 <br />
 
@@ -204,7 +237,7 @@ const Home = () => {
                 />
               </div>
               <br />
-              <div class="formgroup">
+              <div className="formgroup">
                 <label>Send Faiq a message</label>
                 <br />
 
@@ -221,6 +254,11 @@ const Home = () => {
                   Send 1 Coffee for 0.01ETH
                 </button>
               </div>
+              <div>
+                <button type="button" onClick={buyBigCoffee}>
+                  Send 1 Big Coffee for 0.03ETH
+                </button>
+              </div>
             </form>
           </div>
         ) : (
@@ -231,7 +269,7 @@ const Home = () => {
       {currentAccount && <h1>Memos received</h1>}
 
       {currentAccount &&
-        memos.map((memo, idx) => {
+        [...memos].reverse().map((memo, idx) => {
           return (
             <div
               key={idx}
@@ -242,7 +280,7 @@ const Home = () => {
                 margin: "5px",
               }}
             >
-              <p style={{ "font-weight": "bold" }}>"{memo.message}"</p>
+              <p style={{ "fontWeight": "bold" }}>"{memo.message}"</p>
               <p>
                 From: {memo.name} at {memo.timestamp.toString()}
               </p>
