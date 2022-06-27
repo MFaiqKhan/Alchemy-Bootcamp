@@ -74,6 +74,7 @@ contract buyMeACoffee {
     function withdrawTips() public onlyOwner {
         owner.transfer(address(this).balance); // transfer the balance to the owner address.
     }
+    // address(this) is the address of the contract. address(this).balance fetches the ether stored on the contract
 
 
     /**
@@ -81,6 +82,15 @@ contract buyMeACoffee {
     */
     function getMemos() public view returns (Memo[] memory) { // is returning the memos in memory temprorary.
         return memos;
+    }
+
+    /**
+    * @dev change the owner address of the contract.
+    * @param _newOwner The new owner address.
+    * @dev can only be called by the owner.
+    */
+    function changeOwner(address _newOwner) public onlyOwner {
+        owner = payable(_newOwner);
     }
 }
 
