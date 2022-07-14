@@ -162,6 +162,10 @@ contract OnChainNfts is ERC721URIStorage {
         require(ownerOf(tokenId) == msg.sender, "You must own this NFT to train it!"); // we're using the ownerOf function to check if the owner of the token/NFT associated with the tokenId is the sender of the transaction, and we're passing the tokenId
         uint256 currentLevel = tokenIdToPlayerStats[tokenId].level; // we're using the tokenIdToLevels mapping to get the current level of the token/NFT associated with the tokenId, and we're passing the tokenId
         tokenIdToPlayerStats[tokenId].level = currentLevel + 1; // increasing the level of the token/NFT associated with the tokenId by 1
+        tokenIdToPlayerStats[tokenId].Speed++ * 5;
+        tokenIdToPlayerStats[tokenId].Defense++ * 5;
+        tokenIdToPlayerStats[tokenId].Strength++ * 5;
+        tokenIdToPlayerStats[tokenId].Health++ * 5;
         _setTokenURI(tokenId, getTokenURI(tokenId)); // now the token URI is updated with the new level of the token/NFT associated with the tokenId
     }
 
