@@ -1,5 +1,5 @@
 # ON CHAIN NFT .
-### Train level , Dynamically Upgrade the NFT by training the level.
+### Train level , Dynamically Upgrade the NFT(SVG) by training the level.
 ### Uses random function generate the PlayerStats of the NFT.
 
 ```shell
