@@ -25,7 +25,6 @@ contract OnChainNfts is ERC721URIStorage {
         uint256 level;
         uint256 Speed;
         uint256 Defense;
-        uint256 Strength;
         uint256 Health;
     }
     
@@ -43,35 +42,14 @@ contract OnChainNfts is ERC721URIStorage {
         //  you can use functions and variables to dynamically change your SVGs.
         bytes memory svg = abi.encodePacked(
             '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
-            "<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>",
+            '<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>',
             '<rect width="100%" height="100%" fill="black" />',
-            '<text x="50%" y="20%" class="base" dominant-baseline="middle" text-anchor="middle">',
-            "Warrior",
-            "</text>",
-            'text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">',
-            "name: ",
-            getName(tokenId),
-            "</text>",
-            '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">',
-            "Levels: ",
-            getLevels(tokenId),
-            "</text>",
-            '<text x="50%" y="60%" class="base" dominant-baseline="middle" text-anchor="middle">',
-            "Speed: ",
-            getSpeed(tokenId),
-            "</text>",
-            '<text x="50%" y="70%" class="base" dominant-baseline="middle" text-anchor="middle">',
-            "Defense: ",
-            getDefense(tokenId),
-            "</text>",
-            '<text x="50%" y="80%" class="base" dominant-baseline="middle" text-anchor="middle">',
-            "Strength: ",
-            getStrength(tokenId),
-            "</text>",
-            '<text x="50%" y="90%" class="base" dominant-baseline="middle" text-anchor="middle">',
-            "Health: ",
-            getHealth(tokenId),
-            "</text>",
+            '<text x="50%" y="20%" class="base" dominant-baseline="middle" text-anchor="middle">',"Warrior",'</text>',
+            '<text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">', "Name: ",getName(tokenId),'</text>',
+            '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">', "Level: ",getLevels(tokenId),'</text>',
+            '<text x="50%" y="60%" class="base" dominant-baseline="middle" text-anchor="middle">', "Speed: ",getSpeed(tokenId),'</text>',
+            '<text x="50%" y="70%" class="base" dominant-baseline="middle" text-anchor="middle">', "Defense: ",getDefense(tokenId),'</text>',
+            '<text x="50%" y="80%" class="base" dominant-baseline="middle" text-anchor="middle">', "Health: ",getHealth(tokenId),'</text>',
             '</svg>'
         );
         // we're using it to store the SVG code representing the image of our NFT, transformed into an array of bytes thanks to the abi.encodePacked() function that takes one or more variables and encodes them into abi.
@@ -100,27 +78,21 @@ contract OnChainNfts is ERC721URIStorage {
     }
 
     // function to get the Speed of the token/NFT associated with the tokenId
-    function getSpeed(uint256 tokenId) public view returns (uint256) {
+    function getSpeed(uint256 tokenId) public view returns (string memory) {
         uint256 speed = tokenIdToPlayerStats[tokenId].Speed;
-        return speed;
+        return speed.toString();
     }
 
     // function to get the Defense of the token/NFT associated with the tokenId
-    function getDefense(uint256 tokenId) public view returns (uint256) {
+    function getDefense(uint256 tokenId) public view returns (string memory) {
         uint256 defense = tokenIdToPlayerStats[tokenId].Defense;
-        return defense;
-    }
-
-    // function to get the Strength of the token/NFT associated with the tokenId
-    function getStrength(uint256 tokenId) public view returns (uint256) {
-        uint256 strength = tokenIdToPlayerStats[tokenId].Strength;
-        return strength;
+        return defense.toString();
     }
 
     // function to get the Health of the token/NFT associated with the tokenId
-    function getHealth(uint256 tokenId) public view returns (uint256) {
+    function getHealth(uint256 tokenId) public view returns (string memory) {
         uint256 health = tokenIdToPlayerStats[tokenId].Health;
-        return health;
+        return health.toString();
     }
 
     // getTokenURI function to generate the URI of the token/NFT associated with the tokenId
@@ -133,7 +105,6 @@ contract OnChainNfts is ERC721URIStorage {
         '{',
             '"name": "Chain Battles #', tokenId.toString(), '",', // we're using the tokenId to generate the name of the token/NFT, appending the tokenId to the string chain battles # tokenId
             '"description": "Battles on chain",',
-            '"Level": "', getLevels(tokenId),'"',
             '"image": "', generateCharacter(tokenId), '"', // we're using the generateCharacter function to generate the image of the token/NFT associated with the tokenId
         '}'
         );
@@ -152,26 +123,39 @@ contract OnChainNfts is ERC721URIStorage {
         _tokenIds.increment(); // increment the _tokenIds variable counter, so store its current value on a new uint256 variable, in this case, "tokenId"
         uint256 tokenId = _tokenIds.current(); // get the current value of the _tokenIds variable counter.
         _safeMint(msg.sender, tokenId); // we're using the _safeMint function to mint a token/NFT, and we're passing the sender of the transaction, and the tokenId
-        tokenIdToPlayerStats[tokenId] = PlayerStats(_name, 0, random(), random(), random(), random());
+        tokenIdToPlayerStats[tokenId] = PlayerStats(_name, random(50), random(50), random(50), random(50));
         _setTokenURI(tokenId, getTokenURI(tokenId)); // we set the token URI passing the newItemId and the return value of getTokenURI()
     }
 
     // function to Train and raise the level of the token/NFT associated with the tokenId
     function train(uint256 tokenId) public {
+        require(tokenIdToPlayerStats[tokenId].Speed > 0, "Speed must be greater than 0");
         require(_exists(tokenId), "Token Doesn't exist"); // If the token exists, using the _exists() function from the ERC721 standard, we're checking if the token exists.
         require(ownerOf(tokenId) == msg.sender, "You must own this NFT to train it!"); // we're using the ownerOf function to check if the owner of the token/NFT associated with the tokenId is the sender of the transaction, and we're passing the tokenId
         uint256 currentLevel = tokenIdToPlayerStats[tokenId].level; // we're using the tokenIdToLevels mapping to get the current level of the token/NFT associated with the tokenId, and we're passing the tokenId
         tokenIdToPlayerStats[tokenId].level = currentLevel + 1; // increasing the level of the token/NFT associated with the tokenId by 1
-        tokenIdToPlayerStats[tokenId].Speed++ * 5;
-        tokenIdToPlayerStats[tokenId].Defense++ * 5;
-        tokenIdToPlayerStats[tokenId].Strength++ * 5;
-        tokenIdToPlayerStats[tokenId].Health++ * 5;
+        tokenIdToPlayerStats[tokenId].Speed = random(100);
+        tokenIdToPlayerStats[tokenId].Defense = random(100);	
+        tokenIdToPlayerStats[tokenId].Health = random(100);
         _setTokenURI(tokenId, getTokenURI(tokenId)); // now the token URI is updated with the new level of the token/NFT associated with the tokenId
     }
 
+   /*  function setStats(uint256 tokenId) public {
+        if( !_exists(tokenId)) {
+            revert("Please enter the valid tokenId");
+        }
+        if (ownerOf(tokenId) != msg.sender) {
+            revert("You must own this NFT to set its stats!");
+        }
+        tokenIdToPlayerStats[tokenId].Speed = random();
+        tokenIdToPlayerStats[tokenId].Defense = random();
+        tokenIdToPlayerStats[tokenId].Health = random();
+        _setTokenURI(tokenId, getTokenURI(tokenId));
+    } */
+
     // function for generating Random Number:
-    function random() public returns(uint256){
-        return uint(keccak256(abi.encodePacked(initialNumber++))) % 100;
+    function random(uint256 number) public returns(uint256){
+        return uint(keccak256(abi.encodePacked(initialNumber++))) % number++;
     }
 
 

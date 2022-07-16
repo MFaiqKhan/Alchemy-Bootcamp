@@ -15,6 +15,10 @@ module.exports = {
       url: process.env.TESTNET_URL,
       accounts: [process.env.PRIVATE_KEY]
     },
+    goerli: {
+      url: process.env.GOERLI_TESTNET_URL,
+      accounts: [process.env.PRIVATE_KEY]
+    },
   },
   etherscan: { // etherscan is also compatible with the polygonscan 
     apiKey: process.env.POLYGONSCAN_API_KEY, // Your Etherscan API key, When we'll deploy our smart contract, we'll also want to verify it using mumbai.polygonscan
